@@ -52,8 +52,9 @@ Subclasses like `MacPortal`, `XtreamPortal` can build on this to implement speci
 
 ## Notes
 
-- Planned to add child class `MacPortal` (Stalker/Ministra like portals)
+- Has child class `MacPortal` (Stalker/Ministra like portals); check `src/MacPortal.py` and study code for usage
 - Planned to add child class `XtreamPortal` (Xtream-Codes like portals)
+- Planned to write perfect README.md
 
 ---
 

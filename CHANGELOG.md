@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-06-09
+
+### Added
+
+- Added MacPortal as a child class to IPTV.
+- MacPortal supports live, catchup, vod, series, as well as epg fetching.
+- MacPortal requires ffmpeg to download stream if required.
+
 ## [1.0.1] - 2025-06-09
 
 ### Added
@@ -16,5 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Uses `cloudscraper` to bypass Cloudflare.
 - Optional logging/export of responses.
 
-[unreleased]: https://github.com/BhagyaJyoti22006/iptvpy/compare/v1.0.1...HEAD
+[unreleased]: https://github.com/BhagyaJyoti22006/iptvpy/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/BhagyaJyoti22006/iptvpy/compare/v1.0.1...v2.0.0
 [1.0.1]: https://github.com/BhagyaJyoti22006/iptvpy/releases/tag/v1.0.1
