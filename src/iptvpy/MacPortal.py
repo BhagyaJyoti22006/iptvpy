@@ -451,8 +451,9 @@ class MacPortal(IPTV):
         series_list = []
         series_list_by_page = []
         page = 1
+        total, per_page, max_page = None, None, None
         while True:
-            print(f"Fetching Series for {category_id} at page {page}")
+            print(f"Fetching series for {category_id} at page {page}")
             payload = {
                 "type": "series",
                 "action": "get_ordered_list",
@@ -471,18 +472,26 @@ class MacPortal(IPTV):
             }
             r = self.gen_request("post",payload)
             series_data = self.gen_jsondata(r,{},dict)
-            if "total_items" not in series_data or "data" not in series_data:
-                print(f"Failed to fetch VOD list for {category_id} at page {page}")
+            if total is None and "total_items" in series_data:
+                total = series_data["total_items"]
+            if per_page is None and "max_page_items" in series_data:
+                per_page = series_data["max_page_items"]
+            if total is not None and per_page is not None and max_page is None:
+                max_page = (total//per_page) + 1
+            if "data" not in series_data:
+                print(f"Failed to fetch series list for {category_id} at page {page}")
+                series_list_by_page.append([])
+                if page>=9 and sum(len(subpage) for subpage in series_list_by_page[-3:])==0:
+                    break
+                page += 1
                 continue
-            total = series_data["total_items"]
             data = series_data["data"]
             series_list_by_page.append(data)
             series_list.extend(data)
+            if (total is not None and len(series_list)>=total) or (max_page is not None and page>=max_page):
+                break
             page += 1
-            if len(series_list)>=total:
-                break
-            if page>999:
-                break
+            continue
         if by_page:
             return series_list_by_page
         return series_list
@@ -491,8 +500,9 @@ class MacPortal(IPTV):
         vod_list = []
         vod_list_by_page = []
         page = 1
+        total, per_page, max_page = None, None, None
         while True:
-            print(f"Fetching VOD for {category_id} at page {page}")
+            print(f"Fetching vod for {category_id} at page {page}")
             payload = {
                 "type": "vod",
                 "action": "get_ordered_list",
@@ -511,18 +521,26 @@ class MacPortal(IPTV):
             }
             r = self.gen_request("post",payload)
             vod_data = self.gen_jsondata(r,{},dict)
-            if "total_items" not in vod_data or "data" not in vod_data:
-                print(f"Failed to fetch VOD list for {category_id} at page {page}")
+            if total is None and "total_items" in vod_data:
+                total = vod_data["total_items"]
+            if per_page is None and "max_page_items" in vod_data:
+                per_page = vod_data["max_page_items"]
+            if total is not None and per_page is not None and max_page is None:
+                max_page = (total//per_page) + 1
+            if "data" not in vod_data:
+                print(f"Failed to fetch vod list for {category_id} at page {page}")
+                vod_list_by_page.append([])
+                if page>=9 and sum(len(subpage) for subpage in vod_list_by_page[-3:])==0:
+                    break
+                page += 1
                 continue
-            total = vod_data["total_items"]
             data = vod_data["data"]
             vod_list_by_page.append(data)
             vod_list.extend(data)
+            if (total is not None and len(vod_list)>=total) or (max_page is not None and page>=max_page):
+                break
             page += 1
-            if len(vod_list)>=total:
-                break
-            if page>999:
-                break
+            continue
         if by_page:
             return vod_list_by_page
         return vod_list
@@ -552,6 +570,7 @@ class MacPortal(IPTV):
         epg_dated = []
         epg_dated_by_page = []
         page = 1
+        total, per_page, max_page = None, None, None
         while True:
             print(f"Fetching EPG for {date} at page {page}")
             payload = {
@@ -564,21 +583,26 @@ class MacPortal(IPTV):
             }
             r = self.gen_request("post",payload)
             epg_data = self.gen_jsondata(r,{},dict)
-            if "total_items" not in epg_data or "data" not in epg_data:
+            if total is None and "total_items" in epg_data:
+                total = epg_data["total_items"]
+            if per_page is None and "max_page_items" in epg_data:
+                per_page = epg_data["max_page_items"]
+            if total is not None and per_page is not None and max_page is None:
+                max_page = (total//per_page) + 1
+            if "data" not in epg_data:
                 print(f"Failed to fetch EPG for {date} at page {page}")
-                if page>=9 and len(epg_dated)==0:
+                epg_dated_by_page.append([])
+                if page>=9 and sum(len(subpage) for subpage in epg_dated_by_page[-3:])==0:
                     break
                 page += 1
                 continue
-            total = epg_data["total_items"]
             data = epg_data["data"]
             epg_dated_by_page.append(data)
             epg_dated.extend(data)
+            if (total is not None and len(epg_dated)>=total) or (max_page is not None and page>=max_page):
+                break
             page += 1
-            if len(epg_dated)>=total:
-                break
-            if page>999:
-                break
+            continue
         if by_page:
             return epg_dated_by_page
         return epg_dated
@@ -689,7 +713,7 @@ class MacPortal(IPTV):
             date = datetime.datetime.now().strftime("%Y-%m-%d")
         epg_list = self.get_epg_dated(channel_id, date)
         if len(epg_list)==0:
-            print("→ Failed to fetch epg data for:", self.cache["channel"]["name"])
+            print("→ Failed to fetch EPG data for:", self.cache["channel"]["name"])
             print(self.dsh)
             return ""
         target_time = f"{date} {time}"
@@ -710,7 +734,7 @@ class MacPortal(IPTV):
                 epg_id = entry["id"]
                 break
         if epg_id is None:
-            print("→ Failed to fetch epg data for:", self.cache["channel"]["name"])
+            print("→ Failed to fetch EPG data for:", self.cache["channel"]["name"])
             print(self.dsh)
             return ""
         cmd = f"auto /media/{epg_id}.mpg"

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Modified logic for `def get_series_list`, `def get_vod_list` and `get_epg_dated` to prevent infinite loop.
+
 ## [2.0.0] - 2025-06-09
 
 ### Added
