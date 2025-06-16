@@ -921,7 +921,7 @@ class MacPortal(IPTV):
                 if key == "progress":
                     now = time.time()
                     if progress_callback and (now - last) >= callback_interval:
-                        progress_callback(progress.copy())
+                        progress_callback(progress.copy(),process)
                         last = now
             if progress.get("progress") == "end":
                 break

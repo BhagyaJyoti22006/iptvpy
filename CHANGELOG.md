@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Modified logic for `def get_series_list`, `def get_vod_list` and `get_epg_dated` to prevent infinite loop.
+- The progress_callback during download_channel now returns the cmd process object as well.
 
 ## [2.0.0] - 2025-06-09
 
