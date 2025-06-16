@@ -9,5 +9,5 @@ from .IPTV import IPTV
 from .MacPortal import MacPortal
 
 __all__ = ["IPTV", "MacPortal"]
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
